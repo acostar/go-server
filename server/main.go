@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type message struct {
@@ -28,9 +29,15 @@ func main() {
 func getMessages(c *gin.Context) { c.IndentedJSON(http.StatusOK, messages) }
 
 func postMessages(c *gin.Context) {
+	log.SetPrefix("postMessages: ")
+	log.SetFlags(0)
+
 	var newMessage message
 
-	if err := c.BindJSON(&newMessage); err != nil { return }
+	if err := c.BindJSON(&newMessage); err != nil { 
+		log.Fatal(err)
+		return 
+	}
 
 	messages = append(messages, newMessage)
 	c.IndentedJSON(http.StatusCreated, newMessage)
